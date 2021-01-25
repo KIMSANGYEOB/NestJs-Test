@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Movie } from './interface/movie.interface';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Injectable()
 export class MoviesService {
@@ -9,31 +11,29 @@ export class MoviesService {
     return this.movies;
   }
 
-  getOne(id: string): Movie {
-    const movie = this.movies.find((movie) => movie.id === +id);
-
+  getOne(id: number): Movie {
+    const movie = this.movies.find(movie => movie.id === id);
     if (!movie) {
-      throw new NotFoundException(`영화를 찾을 수 없습니다. ID: ${id}`);
+      throw new NotFoundException(`Movie with ID ${id} not found.`);
     }
     return movie;
   }
 
-  create(movieData) {
+  deleteOne(id: number) {
+    this.getOne(id);
+    this.movies = this.movies.filter(movie => movie.id !== id);
+  }
+
+  create(movieData: CreateMovieDto) {
     this.movies.push({
       id: this.movies.length + 1,
       ...movieData,
     });
   }
 
-  update(id: string, movieData: Movie) {
-    this.getOne(id);
-    const index = this.movies.findIndex((movie) => movie.id === +id);
-    this.movies[index] = { id: +id, ...movieData };
-  }
-
-  deleteOne(id: string): boolean {
-    this.getOne(id);
-    this.movies = this.movies.filter((movie) => movie.id !== +id);
-    return true;
+  update(id: number, updateData: UpdateMovieDto) {
+    const movie = this.getOne(id);
+    this.deleteOne(id);
+    this.movies.push({ ...movie, ...updateData });
   }
 }
