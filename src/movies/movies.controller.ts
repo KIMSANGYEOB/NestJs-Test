@@ -11,11 +11,10 @@ import { Movie } from './interface/movie.interface';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { UserService } from 'src/user/user.service';
 
 @Controller('movies')
 export class MoviesController {
-  constructor(private readonly moviesService: MoviesService, private userService: UserService) {}
+  constructor(private readonly moviesService: MoviesService) {}
 
   @Get()
   getAll(): Movie[] {
@@ -24,7 +23,6 @@ export class MoviesController {
 
   @Get(':id')
   getOne(@Param('id') movieId: number): Movie {
-    console.log(this.userService.get());
     return this.moviesService.getOne(movieId);
   }
 

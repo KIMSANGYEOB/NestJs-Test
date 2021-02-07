@@ -99,4 +99,8 @@ describe('MoviesService', () => {
       }
     });
   });
+  
+  afterAll(async () => {
+    await app.close();
+  });
 });
